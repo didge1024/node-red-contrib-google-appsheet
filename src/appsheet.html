@@ -1,0 +1,115 @@
+<script type="text/javascript">
+  RED.nodes.registerType('appsheet', {
+    category: 'function',
+    color: '#4285F4',
+    defaults: {
+      configNodeId: { value: '', type: 'appsheet-config', required: true },
+      tableName: { value: '' },
+      action: { value: 'Find' },
+      selector: { value: '' },
+      actionName: { value: '' },
+      name: { value: '' }
+    },
+    inputs: 1,
+    outputs: 2,
+    outputLabels: ['success', 'validation error'],
+    icon: 'font-awesome/fa-database',
+    label: function () {
+      return this.name || 'AppSheet ' + (this.action || '');
+    },
+    oneditprepare: function () {
+      var actionSelect = $('#node-input-action');
+      var selectorRow = $('#appsheet-selector-row');
+      var actionNameRow = $('#appsheet-actionname-row');
+
+      function toggleFields() {
+        var action = actionSelect.val();
+        selectorRow.toggle(action === 'Find');
+        actionNameRow.toggle(action === 'Action');
+      }
+
+      actionSelect.on('change', toggleFields);
+      toggleFields();
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="appsheet">
+  <div class="form-row">
+    <label for="node-input-configNodeId">Config</label>
+    <input type="text" id="node-input-configNodeId">
+  </div>
+  <div class="form-row">
+    <label for="node-input-tableName">Table</label>
+    <input type="text" id="node-input-tableName" placeholder="Table name (or set via msg.table)">
+  </div>
+  <div class="form-row">
+    <label for="node-input-action">Action</label>
+    <select id="node-input-action" style="width:70%;">
+      <option value="Find">Find</option>
+      <option value="Add">Add</option>
+      <option value="Edit">Edit</option>
+      <option value="Delete">Delete</option>
+      <option value="Action">Action</option>
+    </select>
+  </div>
+  <div class="form-row" id="appsheet-selector-row">
+    <label for="node-input-selector">Selector</label>
+    <input type="text" id="node-input-selector" placeholder="Filter(Table, [Col] = &quot;value&quot;)">
+  </div>
+  <div class="form-row" id="appsheet-actionname-row" style="display:none;">
+    <label for="node-input-actionName">Action Name</label>
+    <input type="text" id="node-input-actionName" placeholder="Custom action name">
+  </div>
+  <div class="form-row">
+    <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="label">
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="appsheet">
+  <p>Perform CRUD operations on Google AppSheet tables.</p>
+
+  <h3>Actions</h3>
+  <dl>
+    <dt>Find</dt><dd>Read rows from a table. Use <code>Selector</code> for filtering (AppSheet expression syntax).</dd>
+    <dt>Add</dt><dd>Insert new rows. Send row data in <code>msg.payload</code> (object or array of objects).</dd>
+    <dt>Edit</dt><dd>Update existing rows. Each row must include the key field.</dd>
+    <dt>Delete</dt><dd>Remove rows. Each row must include the key field.</dd>
+    <dt>Action</dt><dd>Invoke a custom AppSheet action by name.</dd>
+  </dl>
+
+  <h3>Inputs</h3>
+  <dl class="message-properties">
+    <dt>payload <span class="property-type">object | array</span></dt>
+    <dd>Row data for Add/Edit/Delete. Ignored for Find.</dd>
+    <dt>action <span class="property-type">string</span></dt>
+    <dd>Override action: "Find", "Add", "Edit", "Delete", "Action"</dd>
+    <dt>table <span class="property-type">string</span></dt>
+    <dd>Override table name</dd>
+    <dt>selector <span class="property-type">string</span></dt>
+    <dd>AppSheet filter expression for Find</dd>
+    <dt>actionName <span class="property-type">string</span></dt>
+    <dd>Custom action name when action is "Action"</dd>
+    <dt>properties <span class="property-type">object</span></dt>
+    <dd>Optional: Locale, Timezone, RunAsUserEmail</dd>
+  </dl>
+
+  <h3>Outputs</h3>
+  <ol>
+    <li><b>Success</b> — <code>msg.payload</code> contains results. For Find with schema, values are parsed to native JS types and <code>msg.raw</code> has the original response.</li>
+    <li><b>Validation Error</b> — <code>msg.payload</code> contains <code>{ errors: [...], originalPayload }</code></li>
+  </ol>
+
+  <h3>Schema</h3>
+  <p>If an <b>appsheet-schema</b> node is configured for the same table, this node automatically validates writes and parses reads. Without a schema, data passes through unmodified (warning shown).</p>
+
+  <h3>Selector Syntax</h3>
+  <p>AppSheet uses its own expression language for filtering:</p>
+  <ul>
+    <li><code>Filter(Table, [Column] = "value")</code></li>
+    <li><code>And([Col1] = "A", [Col2] >= 10)</code></li>
+    <li><code>OrderBy(Filter(Table, [Active]), [Name], true)</code></li>
+    <li><code>TOP(Filter(Table, [Status] = "Open"), 10)</code></li>
+  </ul>
+</script>

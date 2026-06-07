@@ -1,0 +1,34 @@
+{
+  "name": "node-red-contrib-google-appsheet",
+  "version": "0.1.0",
+  "description": "Node-RED nodes for Google AppSheet CRUD operations with schema-driven type validation",
+  "author": "Bell Hart",
+  "license": "MIT",
+  "keywords": [
+    "node-red",
+    "google",
+    "appsheet",
+    "crud",
+    "api"
+  ],
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "node-red": {
+    "nodes": {
+      "appsheet-config": "src/appsheet-config.js",
+      "appsheet-schema": "src/appsheet-schema.js",
+      "appsheet": "src/appsheet.js"
+    },
+    "version": ">=2.0.0"
+  },
+  "dependencies": {
+    "axios": "^1.7.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  },
+  "scripts": {
+    "test": "jest"
+  }
+}

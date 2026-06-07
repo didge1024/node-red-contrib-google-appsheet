@@ -1,0 +1,558 @@
+[
+    {
+        "id": "a1b2c3d4e5f6a7b8",
+        "type": "tab",
+        "label": "AppSheet CRUD Examples",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "c0nf1g000000001",
+        "type": "appsheet-config",
+        "name": "My AppSheet App",
+        "appId": "YOUR-APP-ID-HERE",
+        "z": ""
+    },
+    {
+        "id": "sc3ma000000001",
+        "type": "appsheet-schema",
+        "z": "a1b2c3d4e5f6a7b8",
+        "configNodeId": "c0nf1g000000001",
+        "tableName": "Orders",
+        "columns": "{\"OrderID\":{\"type\":\"Text\",\"key\":true},\"Customer\":{\"type\":\"Text\",\"key\":false},\"Amount\":{\"type\":\"Price\",\"key\":false},\"OrderDate\":{\"type\":\"Date\",\"key\":false},\"Status\":{\"type\":\"Enum\",\"key\":false},\"Active\":{\"type\":\"Yes/No\",\"key\":false}}",
+        "name": "Orders Schema",
+        "x": 300,
+        "y": 80,
+        "wires": [[]]
+    },
+    {
+        "id": "cmnt000000001",
+        "type": "comment",
+        "z": "a1b2c3d4e5f6a7b8",
+        "name": "Google AppSheet CRUD Examples",
+        "info": "1. Configure the AppSheet Config node with your App ID and Access Key\n2. Update the Schema node with your actual table name and columns\n3. Deploy, then try each operation",
+        "x": 160,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "grp000000001",
+        "type": "group",
+        "z": "a1b2c3d4e5f6a7b8",
+        "name": "Find All Rows",
+        "style": {
+            "fill": "#e3f3d3",
+            "label": true
+        },
+        "nodes": [
+            "inj000000001",
+            "crd000000001",
+            "dbg000000001",
+            "dbg000000002"
+        ],
+        "x": 34,
+        "y": 139,
+        "w": 852,
+        "h": 82
+    },
+    {
+        "id": "grp000000002",
+        "type": "group",
+        "z": "a1b2c3d4e5f6a7b8",
+        "name": "Find Filtered Rows",
+        "style": {
+            "fill": "#e3f3d3",
+            "label": true
+        },
+        "nodes": [
+            "inj000000002",
+            "crd000000002",
+            "dbg000000003",
+            "dbg000000004"
+        ],
+        "x": 34,
+        "y": 259,
+        "w": 852,
+        "h": 82
+    },
+    {
+        "id": "grp000000003",
+        "type": "group",
+        "z": "a1b2c3d4e5f6a7b8",
+        "name": "Add Row",
+        "style": {
+            "fill": "#bfdbef",
+            "label": true
+        },
+        "nodes": [
+            "inj000000003",
+            "crd000000003",
+            "dbg000000005",
+            "dbg000000006"
+        ],
+        "x": 34,
+        "y": 379,
+        "w": 852,
+        "h": 82
+    },
+    {
+        "id": "grp000000004",
+        "type": "group",
+        "z": "a1b2c3d4e5f6a7b8",
+        "name": "Edit Row",
+        "style": {
+            "fill": "#ffefbf",
+            "label": true
+        },
+        "nodes": [
+            "inj000000004",
+            "crd000000004",
+            "dbg000000007",
+            "dbg000000008"
+        ],
+        "x": 34,
+        "y": 499,
+        "w": 852,
+        "h": 82
+    },
+    {
+        "id": "grp000000005",
+        "type": "group",
+        "z": "a1b2c3d4e5f6a7b8",
+        "name": "Delete Row",
+        "style": {
+            "fill": "#ffbfbf",
+            "label": true
+        },
+        "nodes": [
+            "inj000000005",
+            "crd000000005",
+            "dbg000000009",
+            "dbg000000010"
+        ],
+        "x": 34,
+        "y": 619,
+        "w": 852,
+        "h": 82
+    },
+    {
+        "id": "inj000000001",
+        "type": "inject",
+        "z": "a1b2c3d4e5f6a7b8",
+        "g": "grp000000001",
+        "name": "Find All",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "str",
+        "x": 150,
+        "y": 180,
+        "wires": [
+            [
+                "crd000000001"
+            ]
+        ]
+    },
+    {
+        "id": "crd000000001",
+        "type": "appsheet",
+        "z": "a1b2c3d4e5f6a7b8",
+        "g": "grp000000001",
+        "configNodeId": "c0nf1g000000001",
+        "tableName": "Orders",
+        "action": "Find",
+        "selector": "",
+        "actionName": "",
+        "name": "Find All Orders",
+        "x": 490,
+        "y": 180,
+        "wires": [
+            [
+                "dbg000000001"
+            ],
+            [
+                "dbg000000002"
+            ]
+        ]
+    },
+    {
+        "id": "dbg000000001",
+        "type": "debug",
+        "z": "a1b2c3d4e5f6a7b8",
+        "g": "grp000000001",
+        "name": "Success",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 740,
+        "y": 170,
+        "wires": []
+    },
+    {
+        "id": "dbg000000002",
+        "type": "debug",
+        "z": "a1b2c3d4e5f6a7b8",
+        "g": "grp000000001",
+        "name": "Error",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 740,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "inj000000002",
+        "type": "inject",
+        "z": "a1b2c3d4e5f6a7b8",
+        "g": "grp000000002",
+        "name": "Find Open Orders",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "str",
+        "x": 160,
+        "y": 300,
+        "wires": [
+            [
+                "crd000000002"
+            ]
+        ]
+    },
+    {
+        "id": "crd000000002",
+        "type": "appsheet",
+        "z": "a1b2c3d4e5f6a7b8",
+        "g": "grp000000002",
+        "configNodeId": "c0nf1g000000001",
+        "tableName": "Orders",
+        "action": "Find",
+        "selector": "Filter(Orders, [Status] = \"Open\")",
+        "actionName": "",
+        "name": "Find Filtered",
+        "x": 490,
+        "y": 300,
+        "wires": [
+            [
+                "dbg000000003"
+            ],
+            [
+                "dbg000000004"
+            ]
+        ]
+    },
+    {
+        "id": "dbg000000003",
+        "type": "debug",
+        "z": "a1b2c3d4e5f6a7b8",
+        "g": "grp000000002",
+        "name": "Success",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 740,
+        "y": 290,
+        "wires": []
+    },
+    {
+        "id": "dbg000000004",
+        "type": "debug",
+        "z": "a1b2c3d4e5f6a7b8",
+        "g": "grp000000002",
+        "name": "Error",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 740,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "inj000000003",
+        "type": "inject",
+        "z": "a1b2c3d4e5f6a7b8",
+        "g": "grp000000003",
+        "name": "Add Order",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"Customer\":\"John Doe\",\"Amount\":99.99,\"OrderDate\":\"2026-06-06\",\"Status\":\"Open\",\"Active\":true}",
+        "payloadType": "json",
+        "x": 150,
+        "y": 420,
+        "wires": [
+            [
+                "crd000000003"
+            ]
+        ]
+    },
+    {
+        "id": "crd000000003",
+        "type": "appsheet",
+        "z": "a1b2c3d4e5f6a7b8",
+        "g": "grp000000003",
+        "configNodeId": "c0nf1g000000001",
+        "tableName": "Orders",
+        "action": "Add",
+        "selector": "",
+        "actionName": "",
+        "name": "Add Order",
+        "x": 490,
+        "y": 420,
+        "wires": [
+            [
+                "dbg000000005"
+            ],
+            [
+                "dbg000000006"
+            ]
+        ]
+    },
+    {
+        "id": "dbg000000005",
+        "type": "debug",
+        "z": "a1b2c3d4e5f6a7b8",
+        "g": "grp000000003",
+        "name": "Success",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 740,
+        "y": 410,
+        "wires": []
+    },
+    {
+        "id": "dbg000000006",
+        "type": "debug",
+        "z": "a1b2c3d4e5f6a7b8",
+        "g": "grp000000003",
+        "name": "Error",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 740,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "inj000000004",
+        "type": "inject",
+        "z": "a1b2c3d4e5f6a7b8",
+        "g": "grp000000004",
+        "name": "Edit Order",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"OrderID\":\"ORD-001\",\"Customer\":\"Jane Doe\",\"Amount\":149.99}",
+        "payloadType": "json",
+        "x": 150,
+        "y": 540,
+        "wires": [
+            [
+                "crd000000004"
+            ]
+        ]
+    },
+    {
+        "id": "crd000000004",
+        "type": "appsheet",
+        "z": "a1b2c3d4e5f6a7b8",
+        "g": "grp000000004",
+        "configNodeId": "c0nf1g000000001",
+        "tableName": "Orders",
+        "action": "Edit",
+        "selector": "",
+        "actionName": "",
+        "name": "Edit Order",
+        "x": 490,
+        "y": 540,
+        "wires": [
+            [
+                "dbg000000007"
+            ],
+            [
+                "dbg000000008"
+            ]
+        ]
+    },
+    {
+        "id": "dbg000000007",
+        "type": "debug",
+        "z": "a1b2c3d4e5f6a7b8",
+        "g": "grp000000004",
+        "name": "Success",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 740,
+        "y": 530,
+        "wires": []
+    },
+    {
+        "id": "dbg000000008",
+        "type": "debug",
+        "z": "a1b2c3d4e5f6a7b8",
+        "g": "grp000000004",
+        "name": "Error",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 740,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "inj000000005",
+        "type": "inject",
+        "z": "a1b2c3d4e5f6a7b8",
+        "g": "grp000000005",
+        "name": "Delete Order",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"OrderID\":\"ORD-001\"}",
+        "payloadType": "json",
+        "x": 150,
+        "y": 660,
+        "wires": [
+            [
+                "crd000000005"
+            ]
+        ]
+    },
+    {
+        "id": "crd000000005",
+        "type": "appsheet",
+        "z": "a1b2c3d4e5f6a7b8",
+        "g": "grp000000005",
+        "configNodeId": "c0nf1g000000001",
+        "tableName": "Orders",
+        "action": "Delete",
+        "selector": "",
+        "actionName": "",
+        "name": "Delete Order",
+        "x": 490,
+        "y": 660,
+        "wires": [
+            [
+                "dbg000000009"
+            ],
+            [
+                "dbg000000010"
+            ]
+        ]
+    },
+    {
+        "id": "dbg000000009",
+        "type": "debug",
+        "z": "a1b2c3d4e5f6a7b8",
+        "g": "grp000000005",
+        "name": "Success",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 740,
+        "y": 650,
+        "wires": []
+    },
+    {
+        "id": "dbg000000010",
+        "type": "debug",
+        "z": "a1b2c3d4e5f6a7b8",
+        "g": "grp000000005",
+        "name": "Error",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 740,
+        "y": 680,
+        "wires": []
+    }
+]

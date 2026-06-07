@@ -1,0 +1,160 @@
+<script type="text/javascript">
+  RED.nodes.registerType('appsheet-schema', {
+    category: 'function',
+    color: '#7B68EE',
+    defaults: {
+      configNodeId: { value: '', type: 'appsheet-config', required: true },
+      tableName: { value: '', required: true },
+      columns: { value: '{}' },
+      name: { value: '' }
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: 'font-awesome/fa-columns',
+    label: function () {
+      return this.name || 'Schema: ' + (this.tableName || 'unconfigured');
+    },
+    oneditprepare: function () {
+      var node = this;
+      var columnsData = {};
+      try {
+        columnsData = JSON.parse(this.columns || '{}');
+      } catch (e) {
+        columnsData = {};
+      }
+
+      var typeOptions = [
+        'Text', 'Number', 'Date', 'DateTime', 'Time', 'Yes/No',
+        'Enum', 'EnumList', 'Email', 'Phone', 'URL', 'Image',
+        'LatLong', 'Address', 'Price', 'Percent', 'Ref'
+      ];
+
+      function renderColumns(cols) {
+        var container = $('#node-input-columns-container');
+        container.empty();
+        Object.keys(cols).forEach(function (colName) {
+          var def = cols[colName];
+          var row = $('<div class="form-row appsheet-col-row" style="display:flex;align-items:center;gap:8px;margin-bottom:4px;"></div>');
+          row.append('<span style="min-width:140px;font-weight:bold;">' + colName + '</span>');
+          var select = $('<select class="appsheet-col-type" data-col="' + colName + '" style="width:120px;"></select>');
+          typeOptions.forEach(function (t) {
+            select.append('<option value="' + t + '"' + (def.type === t ? ' selected' : '') + '>' + t + '</option>');
+          });
+          row.append(select);
+          var keyCheck = $('<label style="display:flex;align-items:center;gap:4px;"><input type="checkbox" class="appsheet-col-key" data-col="' + colName + '"' + (def.key ? ' checked' : '') + '> Key</label>');
+          row.append(keyCheck);
+          var removeBtn = $('<button type="button" class="red-ui-button red-ui-button-small appsheet-col-remove" data-col="' + colName + '">x</button>');
+          row.append(removeBtn);
+          container.append(row);
+        });
+
+        container.find('.appsheet-col-remove').on('click', function () {
+          var col = $(this).data('col');
+          delete cols[col];
+          renderColumns(cols);
+        });
+      }
+
+      renderColumns(columnsData);
+
+      $('#appsheet-fetch-columns').on('click', function () {
+        var configNodeId = $('#node-input-configNodeId').val();
+        var tableName = $('#node-input-tableName').val();
+        if (!configNodeId || !tableName) {
+          RED.notify('Please select a config and enter a table name', 'error');
+          return;
+        }
+        var btn = $(this);
+        btn.prop('disabled', true).text('Fetching...');
+        $.ajax({
+          url: 'appsheet-schema/fetch-columns',
+          type: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify({ configNodeId: configNodeId, tableName: tableName }),
+          success: function (data) {
+            if (data.warning) RED.notify(data.warning, 'warning');
+            data.columns.forEach(function (col) {
+              if (!columnsData[col]) {
+                columnsData[col] = { type: 'Text', key: false };
+              }
+            });
+            renderColumns(columnsData);
+            btn.prop('disabled', false).text('Fetch Columns');
+          },
+          error: function (xhr) {
+            var msg = xhr.responseJSON ? xhr.responseJSON.error : 'Fetch failed';
+            RED.notify(msg, 'error');
+            btn.prop('disabled', false).text('Fetch Columns');
+          }
+        });
+      });
+
+      $('#appsheet-add-column').on('click', function () {
+        var newName = $('#appsheet-new-col-name').val().trim();
+        if (!newName) return;
+        if (columnsData[newName]) { RED.notify('Column already exists', 'warning'); return; }
+        columnsData[newName] = { type: 'Text', key: false };
+        renderColumns(columnsData);
+        $('#appsheet-new-col-name').val('');
+      });
+
+      node._columnsData = columnsData;
+    },
+    oneditsave: function () {
+      var cols = {};
+      var container = $('#node-input-columns-container');
+      container.find('.appsheet-col-row').each(function () {
+        var colName = $(this).find('.appsheet-col-type').data('col');
+        var type = $(this).find('.appsheet-col-type').val();
+        var key = $(this).find('.appsheet-col-key').is(':checked');
+        cols[colName] = { type: type, key: key };
+      });
+      this.columns = JSON.stringify(cols);
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="appsheet-schema">
+  <div class="form-row">
+    <label for="node-input-configNodeId">Config</label>
+    <input type="text" id="node-input-configNodeId">
+  </div>
+  <div class="form-row">
+    <label for="node-input-tableName">Table</label>
+    <input type="text" id="node-input-tableName" placeholder="Table name (case-sensitive)">
+  </div>
+  <div class="form-row">
+    <button type="button" id="appsheet-fetch-columns" class="red-ui-button" style="width:100%;">Fetch Columns</button>
+  </div>
+  <div class="form-row">
+    <label>Columns</label>
+    <div id="node-input-columns-container" style="max-height:300px;overflow-y:auto;border:1px solid #ccc;padding:8px;border-radius:4px;"></div>
+  </div>
+  <div class="form-row" style="display:flex;gap:8px;">
+    <input type="text" id="appsheet-new-col-name" placeholder="Add column manually" style="flex:1;">
+    <button type="button" id="appsheet-add-column" class="red-ui-button">Add</button>
+  </div>
+  <div class="form-row">
+    <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="label">
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="appsheet-schema">
+  <p>Defines the schema for an AppSheet table. Enables type validation and coercion on downstream CRUD nodes.</p>
+  <h3>Setup</h3>
+  <ol>
+    <li>Select an <b>AppSheet Config</b> node with your App ID and Access Key.</li>
+    <li>Enter the exact <b>Table name</b> (case-sensitive, must match AppSheet).</li>
+    <li>Click <b>Fetch Columns</b> to auto-discover column names from a sample row.</li>
+    <li>Set the <b>type</b> for each column using the dropdown.</li>
+    <li>Check the <b>Key</b> checkbox on your primary key column.</li>
+    <li>You can also add columns manually if they weren't in the sample row.</li>
+  </ol>
+  <h3>Runtime</h3>
+  <p>On startup and when triggered, the schema is stored in flow context under
+  <code>appsheet_schema_{tableName}</code>. CRUD nodes automatically look up the schema from flow context.</p>
+  <p>The schema object is also sent on <code>msg.schema</code> for explicit wiring.</p>
+  <h3>Supported Types</h3>
+  <p>Text, Number, Date, DateTime, Time, Yes/No, Enum, EnumList, Email, Phone, URL, Image, LatLong, Address, Price, Percent, Ref</p>
+</script>

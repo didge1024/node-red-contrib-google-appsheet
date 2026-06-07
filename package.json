@@ -4,6 +4,11 @@
   "description": "Node-RED nodes for Google AppSheet CRUD operations with schema-driven type validation",
   "author": "Bell Hart",
   "license": "MIT",
+  "homepage": "https://github.com/didge1024/node-red-contrib-google-appsheet",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/didge1024/node-red-contrib-google-appsheet.git"
+  },
   "keywords": [
     "node-red",
     "google",

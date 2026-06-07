@@ -79,6 +79,12 @@ describe('Number', () => {
     it('returns error for object', () => {
       expectError(coercion.Number.toApi({}));
     });
+    it('returns error for true', () => {
+      expectError(coercion.Number.toApi(true));
+    });
+    it('returns error for false', () => {
+      expectError(coercion.Number.toApi(false));
+    });
   });
   describe('fromApi', () => {
     it('parses integer string', () => {
@@ -98,6 +104,12 @@ describe('Number', () => {
     });
     it('returns null for undefined', () => {
       expect(coercion.Number.fromApi(undefined)).toBeNull();
+    });
+    it('returns null for non-numeric string "abc"', () => {
+      expect(coercion.Number.fromApi('abc')).toBeNull();
+    });
+    it('returns null for "Infinity" string', () => {
+      expect(coercion.Number.fromApi('Infinity')).toBeNull();
     });
   });
 });
@@ -132,6 +144,9 @@ describe('Price', () => {
     });
     it('returns null for null', () => {
       expect(coercion.Price.fromApi(null)).toBeNull();
+    });
+    it('returns null for non-numeric string "abc"', () => {
+      expect(coercion.Price.fromApi('abc')).toBeNull();
     });
   });
 });
@@ -177,6 +192,9 @@ describe('Percent', () => {
     });
     it('returns null for null', () => {
       expect(coercion.Percent.fromApi(null)).toBeNull();
+    });
+    it('returns null for non-numeric string "abc"', () => {
+      expect(coercion.Percent.fromApi('abc')).toBeNull();
     });
   });
 });

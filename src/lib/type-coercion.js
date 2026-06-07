@@ -29,6 +29,9 @@ function parseNumeric(val, typeName) {
   if (isNullish(val)) {
     return { error: `Cannot convert ${JSON.stringify(val)} to ${typeName}` };
   }
+  if (typeof val === 'boolean') {
+    return { error: `Cannot convert boolean to ${typeName}` };
+  }
   if (typeof val === 'object') {
     return { error: `Cannot convert ${JSON.stringify(val)} to ${typeName}` };
   }
@@ -181,7 +184,9 @@ const NumberType = {
   fromApi(val) {
     const guard = fromApiNullGuard(val);
     if (guard !== undefined) return guard;
-    return parseFloat(val);
+    const result = parseFloat(val);
+    if (!isFinite(result)) return null;
+    return result;
   },
 };
 
@@ -192,7 +197,9 @@ const Price = {
   fromApi(val) {
     const guard = fromApiNullGuard(val);
     if (guard !== undefined) return guard;
-    return parseFloat(val);
+    const result = parseFloat(val);
+    if (!isFinite(result)) return null;
+    return result;
   },
 };
 
@@ -212,7 +219,9 @@ const Percent = {
   fromApi(val) {
     const guard = fromApiNullGuard(val);
     if (guard !== undefined) return guard;
-    return parseFloat(val);
+    const result = parseFloat(val);
+    if (!isFinite(result)) return null;
+    return result;
   },
 };
 

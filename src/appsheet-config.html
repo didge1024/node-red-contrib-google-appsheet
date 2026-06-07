@@ -1,0 +1,37 @@
+<script type="text/javascript">
+  RED.nodes.registerType('appsheet-config', {
+    category: 'config',
+    defaults: {
+      appId: { value: '', required: true },
+      name: { value: '' }
+    },
+    credentials: {
+      accessKey: { type: 'password' }
+    },
+    label: function () {
+      return this.name || this.appId || 'AppSheet Config';
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="appsheet-config">
+  <div class="form-row">
+    <label for="node-config-input-appId">App ID</label>
+    <input type="text" id="node-config-input-appId" placeholder="AppSheet App GUID">
+  </div>
+  <div class="form-row">
+    <label for="node-config-input-accessKey">Access Key</label>
+    <input type="password" id="node-config-input-accessKey" placeholder="Application Access Key">
+  </div>
+  <div class="form-row">
+    <label for="node-config-input-name">Name</label>
+    <input type="text" id="node-config-input-name" placeholder="Optional label">
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="appsheet-config">
+  <p>Configuration node for Google AppSheet API credentials.</p>
+  <h3>Details</h3>
+  <p><b>App ID</b> — found in the AppSheet editor under Settings &gt; Integrations. This is the unique GUID for your app.</p>
+  <p><b>Access Key</b> — the Application Access Key, also found under Settings &gt; Integrations. Enable the API toggle and click "Create Application Access Key."</p>
+</script>
